@@ -2,276 +2,460 @@
   "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "Example.com",
-    "termsOfService": "https://example.com/terms/",
+    "title": "Cacao ID API Reference",
+    "termsOfService": "https://www.monedacacao.com/terminos/",
     "contact": {
-      "email": "contact@example.com",
-      "url": "http://example.com/contact"
+      "email": "holamundo@monedacacao.com",
+      "url": "http://www.monedacacao.com/contacto"
     },
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
     "x-logo": {
-      "url": "https://apis.guru/openapi-template/logo.png"
+      "url": "https://storage.googleapis.com/cacao-static-content/logos/red-cacao/cr_logo_green.png"
     },
-    "description": "This is an **example** API to demonstrate features of OpenAPI specification\n# Introduction\nThis specification is intended to to be a good starting point for describing your API in \n[OpenAPI/Swagger format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md).\nIt also demonstrates features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo) tool and \n[ReDoc](https://github.com/Rebilly/ReDoc) documentation engine. So beyond the standard OpenAPI syntax we use a few \n[vendor extensions](https://github.com/Rebilly/ReDoc/blob/master/docs/redoc-vendor-extensions.md).\n\n# OpenAPI Specification\nThe goal of The OpenAPI Specification is to define a standard, language-agnostic interface to REST APIs which\nallows both humans and computers to discover and understand the capabilities of the service without access to source\ncode, documentation, or through network traffic inspection. When properly defined via OpenAPI, a consumer can \nunderstand and interact with the remote service with a minimal amount of implementation logic. Similar to what\ninterfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.\n"
-  },
-  "externalDocs": {
-    "description": "Find out how to create Github repo for your OpenAPI spec.",
-    "url": "https://github.com/Rebilly/generator-openapi-repo"
+    "description": "# Introduction\nThe Cacao ID API implements the OAuth 2 protocol and is built on HTTP around REST and resource oriented URLs. \nIt accepts form-encoded request bodies and returns JSON responses.\nStandard HTTP response codes and verbs are used. \nYou can try the Cacao ID API in its testnet environment.\nEach environment has its own accounts and objects, so you will need\nto create a CacaoID account for the testnet environment.\n\n# Authentication\nCacaoID is built utilizing the OAuth 2.0 protocol. \n\nThere are two forms of authentication:\n- OAuth2 with Credentails\n- API Keys\n\nOnce a user has created a Cacao ID account he can create API keys to allow access without the need for his credentials. As\na general rule, if a humans is behind the interaction OAuth2 should be used while API Keys must be reserved for systems.\n\n# Pagination\nTODO\n\n# SDKs\nTODO\n\n# Getting Started\nTODO\n"
   },
   "tags": [
     {
-      "name": "Echo",
-      "description": "Example echo operations"
+      "name": "Profile",
+      "description": "Collection of settings and information associated with a user. There are two types of profiles, \npersonal profiles and business profiles. A personal profile is created automatically for a user when\nhe creates a Cacao ID account. Buiness profiles need to be created separatelly.\n<SchemaDefinition schemaRef=\"#/components/schemas/Profile\" />\n"
     },
     {
-      "name": "User",
-      "description": "Operations about user"
+      "name": "Devices",
+      "description": "Transactions represent all monetary transfers of value from a Cacao Account \n<SchemaDefinition schemaRef=\"#/components/schemas/Devices\" />\n"
+    },
+    {
+      "name": "Keys",
+      "description": "External Accounts are third party integrations such as banking accounts or debit cards that can be used by Cacao Accounts as a funding or withdraw method.\n<SchemaDefinition schemaRef=\"#/components/schemas/Keys\" />\n"
+    },
+    {
+      "name": "Identity Proofs",
+      "description": "Payment Requests are soliciations for payments that can be fullfilled by the recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/IdentityProofs\" />\n"
+    },
+    {
+      "name": "Applications",
+      "description": "Prepays are payments done in advance that can be fullfilled by the recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/Applications\" />\n"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Core Resources",
+      "tags": [
+        "Profile",
+        "Devices",
+        "Keys",
+        "Identity Proofs",
+        "Applications"
+      ]
+    },
+    {
+      "name": "Profile",
+      "tags": [
+        "Profiles"
+      ]
+    }
+  ],
+  "security": [
+    {
+      "oAuth": []
+    },
+    {
+      "SecretApiKey": []
     }
   ],
   "servers": [
     {
-      "url": "http://example.com/api/v1"
+      "url": "https://testnet.cacaoid.com/api/v1/",
+      "description": "Testing environment"
     },
     {
-      "url": "https://example.com/api/v1"
+      "url": "https://production.cacaoid.com/api/v1",
+      "description": "Production environment"
     }
   ],
   "paths": {
-    "/echo": {
-      "post": {
+    "/profiles/": {
+      "get": {
         "tags": [
-          "Echo"
+          "Profiles"
         ],
-        "summary": "Echo test",
-        "description": "Receive the exact message you've sent",
-        "operationId": "echo",
-        "security": [
+        "summary": "List Cacao accounts",
+        "description": "Returns a list of all your Cacao accounts sorted chronologicaly by creation date.",
+        "operationId": "listCacaoAccounts",
+        "parameters": [
           {
-            "api_key": []
+            "$ref": "#/components/parameters/limit"
           },
           {
-            "basic_auth": []
+            "$ref": "#/components/parameters/offset"
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
-            "headers": {
-              "X-Rate-Limit": {
-                "description": "calls per hour allowed by the user",
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "X-Expires-After": {
-                "$ref": "#/components/headers/ExpiresAfter"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "response": {
-                    "value": "Hello world!"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
                   }
                 }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "text/csv": {
-                "schema": {
-                  "type": "string"
-                }
               }
             }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string",
-                "example": "Hello world!"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "type": "string",
-                "example": "Hello world!"
-              }
-            }
-          },
-          "description": "Echo payload",
-          "required": true
-        }
-      }
-    },
-    "/users/{username}": {
-      "parameters": [
-        {
-          "name": "pretty_print",
-          "in": "query",
-          "description": "Pretty print response",
-          "schema": {
-            "type": "boolean"
-          }
-        }
-      ],
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Get user by user name",
-        "description": "Some description of the operation. \nYou can use `markdown` here.\n",
-        "operationId": "getUserByName",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be fetched",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "with_email",
-            "in": "query",
-            "description": "Filter users without email",
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "security": [
-          {
-            "main_auth": [
-              "read:users"
-            ]
-          },
-          {
-            "api_key": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                },
-                "example": {
-                  "username": "user1",
-                  "email": "user@example.com"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Updated user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be updated",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "security": [
-          {
-            "main_auth": [
-              "write:users"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           },
           "400": {
-            "description": "Invalid user supplied"
+            "$ref": "#/components/responses/BadRequest"
           },
-          "404": {
-            "description": "User not found"
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "402": {
+            "$ref": "#/components/responses/RequestFailed"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
           }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
-          },
-          "description": "Updated user object",
-          "required": true
         }
       }
     }
   },
   "components": {
     "schemas": {
-      "Email": {
-        "description": "User email address",
-        "type": "string",
-        "format": "test",
-        "example": "john.smith@example.com"
-      },
-      "User": {
+      "Profile": {
         "type": "object",
         "properties": {
-          "username": {
-            "description": "User supplied username",
-            "type": "string",
-            "minLength": 4,
-            "example": "John78"
-          },
-          "firstName": {
-            "description": "User first name",
-            "type": "string",
-            "minLength": 1,
-            "example": "John"
-          },
-          "lastName": {
-            "description": "User last name",
-            "type": "string",
-            "minLength": 1,
-            "example": "Smith"
-          },
-          "email": {
-            "$ref": "#/components/schemas/Email"
+          "profileID": {
+            "$ref": "#/components/schemas/ProfileID"
           }
+        }
+      },
+      "ProfileID": {
+        "description": "Unique and inmutable identifier of a profile",
+        "type": "string",
+        "minLength": 1,
+        "example": "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
+      },
+      "Owner": {
+        "description": "Unique identifier of user that owns the profile",
+        "type": "string",
+        "minLength": 1,
+        "example": "owner@cacaoid.com"
+      },
+      "ProfileType": {
+        "description": "Type of profile",
+        "type": "string",
+        "minLength": 1,
+        "example": "PERSON"
+      },
+      "Devices": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "tickerSymbol": {
+            "$ref": "#/components/schemas/TickerSymbol"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/BalanceZero"
+          },
+          "accountName": {
+            "$ref": "#/components/schemas/AccountNameEmergency"
+          }
+        }
+      },
+      "Keys": {
+        "type": "object",
+        "properties": {
+          "tickerSymbol": {
+            "$ref": "#/components/schemas/TickerSymbol"
+          },
+          "accountName": {
+            "$ref": "#/components/schemas/AccountName"
+          }
+        }
+      },
+      "IdentityProofs": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "tickerSymbol": {
+            "$ref": "#/components/schemas/TickerSymbol"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/BalanceZero"
+          },
+          "accountName": {
+            "$ref": "#/components/schemas/AccountName"
+          }
+        }
+      },
+      "Applications": {
+        "type": "object",
+        "properties": {
+          "accountName": {
+            "$ref": "#/components/schemas/AccountNameEmergency"
+          }
+        }
+      },
+      "Address": {
+        "description": "Unique identifier of an account to which monetary transactions are delivered.",
+        "type": "string",
+        "minLength": 1,
+        "example": "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
+      },
+      "TickerSymbol": {
+        "description": "Abbreviation userd to uniquely identify a particular currency. It is composed by 3 characters denoting the emitting institution followed by a hyphen and 3 chacters with the currency code",
+        "type": "string",
+        "minLength": 7,
+        "maxLength": 7,
+        "example": "CAO-MXN"
+      },
+      "Balance": {
+        "description": "Amount of coins present in the account.",
+        "type": "integer",
+        "example": 243
+      },
+      "BalanceZero": {
+        "description": "Amount of coins present in the account.",
+        "type": "integer",
+        "example": 0
+      },
+      "AccountName": {
+        "description": "User generated name of the account",
+        "type": "string",
+        "minLength": 1,
+        "example": "Savings"
+      },
+      "AccountNameEmergency": {
+        "description": "User generated name of the account",
+        "type": "string",
+        "example": "Emergencies"
+      },
+      "Status": {
+        "description": "The status of the transaction",
+        "type": "string",
+        "minLength": 1,
+        "example": "Success"
+      },
+      "Amount": {
+        "description": "Amount paid",
+        "type": "integer",
+        "minimum": 1,
+        "example": 293
+      },
+      "Allowance": {
+        "description": "Amount allowed to withdraw from the account",
+        "type": "integer",
+        "minimum": 1,
+        "example": 420
+      },
+      "Fee": {
+        "description": "Amount paid as a comission to a third-party",
+        "type": "integer",
+        "example": 5
+      },
+      "Concept": {
+        "description": "General notion of the transaction",
+        "type": "string",
+        "example": "Tacos from yesterday"
+      },
+      "Data": {
+        "description": "Extra data appended to the transaction",
+        "type": "string",
+        "example": "{ sender: \"tecdebloques\"}"
+      },
+      "ProfileAlias": {
+        "description": "Profile identifier",
+        "type": "string",
+        "minLength": 1,
+        "example": "tecdebloques"
+      },
+      "Permissions": {
+        "description": "The authorization level, can be `read-only` or `full-access`.",
+        "type": "string",
+        "minLength": 1,
+        "example": "read-only"
+      },
+      "Sender": {
+        "description": "The profile unique identifier of the sender",
+        "type": "string",
+        "example": "tony"
+      },
+      "Receiver": {
+        "description": "The profile unique identifier of the recepient",
+        "type": "string",
+        "example": "thanos"
+      },
+      "Anonymous": {
+        "description": "If the operation is anonymous the profile identifier will not be public",
+        "type": "boolean",
+        "example": false
+      },
+      "Fulfilled": {
+        "description": "If the prepay has already been fulfiled",
+        "type": "boolean",
+        "example": false
+      },
+      "TransactionID": {
+        "description": "Unique identifier of the transaction.",
+        "type": "string",
+        "minLength": 1,
+        "example": "d773cd4dc21975c3f3fec70bcf6e4b43463ce7c53050681f106790036cc6d8be"
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "The type of error returned.",
+            "type": "string",
+            "example": "invalid_request_error"
+          },
+          "code": {
+            "description": "A short string indiciating the error reported.",
+            "type": "string",
+            "example": "ERR412"
+          },
+          "message": {
+            "description": "A human readable message provinding more details about the error.",
+            "type": "string",
+            "example": "Account Address must be 20 characters long."
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request was unacceptable, often due a invalid or missing required parameter.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "The request lacks valid authentication credentials for the target resource.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "RequestFailed": {
+        "description": "The request was valid but it failed.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The requested resource doesn't exist.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "The request conflicts with another request.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too many requests hit the API too quickly. Try again later or backoff your requests.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Something went wrong on Cacao's end.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "profileID": {
+        "name": "profile_id",
+        "in": "path",
+        "description": "The unique identifier of the profile",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "name": "id",
+        "in": "path",
+        "description": "The unique identifier of the resource",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "email": {
+        "name": "email",
+        "in": "query",
+        "description": "A filter on the list based on the email from the object owner. The value must be a string.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "applicationId": {
+        "name": "application_id",
+        "in": "query",
+        "description": "A filter on the list based on the application_id from the object owner. The value must be a string.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 10.",
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "offset": {
+        "name": "start",
+        "in": "query",
+        "description": "From what object number will the pagination start",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
         }
       }
     },
@@ -285,16 +469,8 @@
       }
     },
     "securitySchemes": {
-      "api_key": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "api_key"
-      },
-      "basic_auth": {
-        "type": "http",
-        "scheme": "basic"
-      },
-      "main_auth": {
+      "oAuth": {
+        "description": "Blah",
         "type": "oauth2",
         "flows": {
           "implicit": {
@@ -305,6 +481,11 @@
             }
           }
         }
+      },
+      "SecretApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "api_key"
       }
     }
   }
