@@ -45,19 +45,19 @@ tags:
       personal profiles and business profiles. A personal profile is created automatically for a user when
       he creates a Cacao ID account. Buiness profiles need to be created separatelly.
       <SchemaDefinition schemaRef="#/components/schemas/Profile" />
-  - name: Devices
+  - name: Device
     description: |
       Transactions represent all monetary transfers of value from a Cacao Account 
       <SchemaDefinition schemaRef="#/components/schemas/Devices" />
-  - name: Keys
+  - name: Key
     description: |
       External Accounts are third party integrations such as banking accounts or debit cards that can be used by Cacao Accounts as a funding or withdraw method.
       <SchemaDefinition schemaRef="#/components/schemas/Keys" />
-  - name: Identity Proofs
+  - name: Identity Proof
     description: |
       Payment Requests are soliciations for payments that can be fullfilled by the recipient.
       <SchemaDefinition schemaRef="#/components/schemas/IdentityProofs" />
-  - name: Applications
+  - name: Application
     description: |
       Prepays are payments done in advance that can be fullfilled by the recipient.
       <SchemaDefinition schemaRef="#/components/schemas/Applications" />
@@ -65,13 +65,19 @@ x-tagGroups:
   - name: Core Resources
     tags:
       - Profile
-      - Devices
-      - Keys
-      - Identity Proofs
-      - Applications
-  - name: Profile
+      - Device
+      - Identity Proof
+      - Key
+      - Application
+  - name: User
     tags:
       - Profiles
+      - Devices
+      - Identity Proofs
+  - name: Credentials
+    tags:
+      - Keys
+      - Applications
 security:
   - oAuth: []
   - SecretApiKey: []
@@ -85,9 +91,9 @@ paths:
     get:
       tags:
         - Profiles
-      summary: List Cacao accounts
-      description: Returns a list of all your Cacao accounts sorted chronologicaly by creation date.
-      operationId: listCacaoAccounts
+      summary: List Profiles
+      description: Returns a list of all your profiles sorted chronologicaly by creation date.
+      operationId: listProfiles
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
@@ -110,8 +116,748 @@ paths:
           $ref: '#/components/responses/TooManyRequests'
         '500':
           $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Profiles
+      summary: Create a profile
+      description: Creates a new business profile
+      operationId: createProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/profiles/{profile_id}':
+    parameters:
+      - $ref: '#/components/parameters/profileID'
+    get:
+      tags:
+        - Profiles
+      summary: Get a profile
+      description: Retrieve an existing Profile its ID.
+      operationId: getProfile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - Profiles
+      summary: Update a profile
+      description: Update an existing profile
+      operationId: updateProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Profiles
+      summary: Delete a profile
+      description: Delete a profile
+      operationId: deleteProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/profiles/{profile_id}/authorizeOperator':
+    parameters:
+      - $ref: '#/components/parameters/profileID'
+    post:
+      tags:
+        - Profiles
+      summary: Authorize profile operator
+      description: Authorize a profile with either read only or full access permissions
+      operationId: authorizeProfileOperator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/profiles/{profile_id}/revokeOperator':
+    parameters:
+      - $ref: '#/components/parameters/profileID'
+    post:
+      tags:
+        - Profiles
+      summary: Revoke profile operator
+      description: Revoke a profile operator
+      operationId: revokeProfileOperator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /devices/:
+    get:
+      tags:
+        - Devices
+      summary: List Devices
+      description: Returns a list of all your devices sorted chronologicaly by creation date.
+      operationId: listDevices
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Devices
+      summary: Create a device
+      description: Creates a new device
+      operationId: createDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/devices/{device_id}':
+    parameters:
+      - $ref: '#/components/parameters/deviceID'
+    get:
+      tags:
+        - Devices
+      summary: Get a device
+      description: Retrieve an existing Device with its ID.
+      operationId: getDevice
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - Devices
+      summary: Update a device
+      description: Update an existing device
+      operationId: updateDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Devices
+      summary: Delete a device
+      description: Delete a device
+      operationId: deleteDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /identity_proofs/:
+    get:
+      tags:
+        - Identity Proofs
+      summary: List identity proofs
+      description: Returns a list of all your identity proofs sorted chronologicaly by creation date.
+      operationId: listProofs
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Identity Proofs
+      summary: Create an identity proof
+      description: Creates a new identity proof
+      operationId: createProof
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/identity_proofs/{proof_id}':
+    parameters:
+      - $ref: '#/components/parameters/proofID'
+    get:
+      tags:
+        - Identity Proofs
+      summary: Get a profile
+      description: Retrieve an existing Profile its ID.
+      operationId: getProof
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Identity Proofs
+      summary: Delete an identity proof
+      description: Delete a indentity proof
+      operationId: deleteProof
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/identity_proofs/{proof_id}/approve':
+    parameters:
+      - $ref: '#/components/parameters/proofID'
+    post:
+      tags:
+        - Identity Proofs
+      summary: Accept Proof
+      description: Accept a proof as valid
+      operationId: acceptProof
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/identity_proofs/{proof_id}/reject':
+    parameters:
+      - $ref: '#/components/parameters/proofID'
+    post:
+      tags:
+        - Identity Proofs
+      summary: Reject Proof
+      description: Reject a proof
+      operationId: rejectProof
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /keys/:
+    get:
+      tags:
+        - Keys
+      summary: List Keys
+      description: Returns a list of all your keys sorted chronologicaly by creation date.
+      operationId: listKeys
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Keys
+      summary: Create a key
+      description: Creates a new key
+      operationId: createKey
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/keys/{key_id}':
+    parameters:
+      - $ref: '#/components/parameters/keyID'
+    get:
+      tags:
+        - Keys
+      summary: Get a key
+      description: Retrieve an existing Key from its ID.
+      operationId: getKey
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Keys
+      summary: Delete a key
+      description: Delete a key
+      operationId: deleteKey
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /applications/:
+    get:
+      tags:
+        - Applications
+      summary: List Applications
+      description: Returns a list of all your applications sorted chronologicaly by creation date.
+      operationId: listApplications
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Applications
+      summary: Create an application
+      description: Creates a new application
+      operationId: createApplication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/applications/{application_id}':
+    parameters:
+      - $ref: '#/components/parameters/applicationID'
+    get:
+      tags:
+        - Applications
+      summary: Get an application
+      description: Retrieve an existing application with its ID.
+      operationId: getApplication
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Temporal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Applications
+      summary: Delete an application
+      description: Delete an application
+      operationId: deleteApplication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Temporal'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '402':
+          $ref: '#/components/responses/RequestFailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
 components:
   schemas:
+    Temporal:
+      description: Placeholder
+      type: string
+      minLength: 1
+      example: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
     Profile:
       type: object
       properties:
@@ -315,6 +1061,34 @@ components:
       name: profile_id
       in: path
       description: The unique identifier of the profile
+      required: true
+      schema:
+        type: string
+    deviceID:
+      name: device_id
+      in: path
+      description: The unique identifier of the device
+      required: true
+      schema:
+        type: string
+    keyID:
+      name: key_id
+      in: path
+      description: The unique identifier of the key
+      required: true
+      schema:
+        type: string
+    proofID:
+      name: proof_id
+      in: path
+      description: The unique identifier of the proof
+      required: true
+      schema:
+        type: string
+    applicationID:
+      name: application_id
+      in: path
+      description: The unique identifier of the application
       required: true
       schema:
         type: string
