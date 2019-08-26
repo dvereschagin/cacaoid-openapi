@@ -460,7 +460,7 @@ paths:
         - Identity Proofs
       summary: List identity proofs
       description: Returns a list of all your identity proofs sorted chronologicaly by creation date.
-      operationId: listProfiles
+      operationId: listProofs
       parameters:
         - $ref: "#/components/parameters/limit"
         - $ref: "#/components/parameters/offset"
