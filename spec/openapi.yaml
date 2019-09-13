@@ -10,7 +10,7 @@ info:
     name: Apache 2.0
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
   x-logo:
-    url: "https://storage.googleapis.com/cacao-static-content/logos/red-cacao/cr_logo_green.png"
+    url: "https://storage.googleapis.com/cacao-static-content/logos/cacao-id/ci_logo_green.png"
   description: |
     # Introduction
     The Cacao ID API implements the OAuth 2 protocol and is built on HTTP around REST and resource oriented URLs. 
