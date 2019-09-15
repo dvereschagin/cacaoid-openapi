@@ -1172,13 +1172,13 @@ components:
     ApproveProofRequest:
       type: object
       properties:
-        proof_id:
-          $ref: "#/components/schemas/ProofID"
+        validator_id:
+          $ref: "#/components/schemas/ProofValidatorID"
     RejectProofRequest:
       type: object
       properties:
-        proof_id:
-          $ref: "#/components/schemas/ProofID"
+        validator_id:
+          $ref: "#/components/schemas/ProofValidatorID"
 
     Applications:
       type: object
