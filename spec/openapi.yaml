@@ -37,38 +37,51 @@ info:
     TODO
 
     # Getting Started
-    TODO
+    To integrate with the CacaoID API the first step required is to have a Cacao OAuth Client registered. This is done by one of our executives who will provide you with the credentials.
+    Once you have your credentials you are required to implement a OAuth Client in your mobile or web application utilizing one of the official OAuth libraries. After you incorporate the `OAuth 
+    Authorization Code Flow` into your application you should be able to register or login with a CacaoID account. 
+
+    Once you have logged in in your account, you will get an OAuth token, which can be used to interact with the API. However, for security concerns OAuth tokens have short expiration times, so
+    it is recommended that you create an `API Key` or a `Device`. An `API Key` is a Ed25519 key pair that allows authorization utilizing signatures, so instead of having to refresh the OAuth token, 
+    the client stores a Private Key which is utilized to generate the authorizing signature. A `Device` has the same functionality as an `API Key` but is intended for Mobile Apps that can receive
+    push notifications. 
+
+    We recommend the use of API Keys only on devices where the storage of secrets can be secure such as Mobile Apps or Server side applications. Web Applications (browser based)
+    should stick to using OAuth even if the sessions are short.
 
 tags:
   - name: Profile
     description: |
       Collection of settings and information associated with a user. There are two types of profiles, 
-      personal profiles and business profiles. A personal profile is created automatically for a user when
-      he creates a Cacao ID account. Buiness profiles need to be created separatelly.
+      personal profiles and business profiles. A user can only have one personal profile, but multiple business profiles.
+      A personal profile is created automatically for a user when he creates a Cacao ID account. 
       <SchemaDefinition schemaRef="#/components/schemas/Profile" />
-  - name: Device
-    description: |
-      Transactions represent all monetary transfers of value from a Cacao Account 
-      <SchemaDefinition schemaRef="#/components/schemas/Devices" />
   - name: Key
     description: |
-      External Accounts are third party integrations such as banking accounts or debit cards that can be used by Cacao Accounts as a funding or withdraw method.
+      A `Key` allows a user to authorize requests and transactions. `Keys` are comprised from a Ed22519 key pair and a Transaction Key. The key pair its utilized for signing requests, while the Transaction Key must be 
+      utilized for authorizing monetary transactions. After creation, the Ed25519 Public Key is stored in our server, and the Private Key is sent alongside the Transaction Key back the client. 
+      It is expected for the client to save the Private Key and the Transaction Key as these are unrecoverable. A user will need to create a new Key if he loses this credentials.
       <SchemaDefinition schemaRef="#/components/schemas/Keys" />
+  - name: Device
+    description: |
+      A `Device` is comprised of a `Key` and a couple of additional fields. Devices serve the same functions as keys but also allow for the reception of push notifications.
+      <SchemaDefinition schemaRef="#/components/schemas/Devices" />
   - name: Identity Proof
     description: |
-      Payment Requests are soliciations for payments that can be fullfilled by the recipient.
+      Identity Proofs are as the name suggest, physical evidence that the user is the legal person he claims to be.
+      Submitting Identity Proofs allows for the verification of the user account.
       <SchemaDefinition schemaRef="#/components/schemas/IdentityProofs" />
   - name: Application
     description: |
-      Prepays are payments done in advance that can be fullfilled by the recipient.
+      Applications are the official way to create a Cacao intrgration. **Unsopported for now**
       <SchemaDefinition schemaRef="#/components/schemas/Applications" />
 x-tagGroups:
   - name: "Core Resources"
     tags:
       - Profile
+      - Key
       - Device
       - Identity Proof
-      - Key
       - Application
   - name: "User"
     tags:
@@ -85,7 +98,7 @@ security:
 servers:
   - url: "https://testnet.cacaoid.com/api/v1/"
     description: Testing environment
-  - url: "https://production.cacaoid.com/api/v1"
+  - url: "https://www.cacaoid.com/api/v1"
     description: Production environment
 paths:
   "/profiles/":
@@ -883,57 +896,218 @@ components:
     Profile:
       type: object
       properties:
-        profileID:
+        id:
           $ref: "#/components/schemas/ProfileID"
+        owner_id:
+          $ref: "#/components/schemas/OwnerID"
+        type:
+          $ref: "#/components/schemas/ProfileType"
+        display_name:
+          $ref: "#/components/schemas/DisplayName"
+        birthdate:
+          $ref: "#/components/schemas/Birthdate"
+        email:
+          $ref: "#/components/schemas/Email"
+        phone:
+          $ref: "#/components/schemas/Phone"
+        verification_level:
+          $ref: "#/components/schemas/VerificationLevel"
     ProfileID:
-      description: Unique and inmutable identifier of a profile
+      description: Base64 encoded unique identifier of a profile.
       type: string
       minLength: 1
       example: "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
-    Owner:
-      description: Unique identifier of user that owns the profile
+    OwnerID:
+      description: Base64 encoded unique identifier of the user that owns the resource.
       type: string
       minLength: 1
-      example: "owner@cacaoid.com"
+      example: "b57665d54f77faa8ea3b8588c590b5acf1c29a2008fbede8b770d8ddbf5d54d1"
     ProfileType:
-      description: Type of profile
+      description: The type of profile. Personal profiles are for humans, while business profiles are for an organization or business.
       type: string
       minLength: 1
-      example: "PERSON"
-    Devices:
-      type: object
-      properties:
-        address:
-          $ref: "#/components/schemas/Address"
-        tickerSymbol:
-          $ref: "#/components/schemas/TickerSymbol"
-        balance:
-          $ref: "#/components/schemas/BalanceZero"
-        accountName:
-          $ref: "#/components/schemas/AccountNameEmergency"
+      example: "PERSONAL"
+      enum:
+        - PERSONAL
+        - BUSINESS
+    DisplayName:
+      description: Public facing diplay name of the profile.
+      type: string
+      minLength: 1
+      example: "Juan Rulfo"
+    Birthdate:
+      description: Date of birth of the person or buisness
+      type: string
+      format: date
+      minLength: 1
+    Email:
+      description: Public email of the profile.
+      type: string
+      format: email
+      minLength: 1
+      example: "juan@rulfo.com"
+    Phone:
+      description: Public phone number of the profile.
+      type: string
+      minLength: 1
+      example: "5555555555"
+    VerificationLevel:
+      description: The level of verification of the profile.
+      type: string
+      minLength: 1
+      example: "FULL"
+      enum:
+        - NONE
+        - MARGINAL
+        - FULL
+        - ULTIMATE
     Keys:
       type: object
       properties:
-        tickerSymbol:
-          $ref: "#/components/schemas/TickerSymbol"
-        accountName:
-          $ref: "#/components/schemas/AccountName"
+        id:
+          $ref: "#/components/schemas/KeyID"
+        owner_id:
+          $ref: "#/components/schemas/OwnerID"
+        name:
+          $ref: "#/components/schemas/KeyName"
+        active:
+          $ref: "#/components/schemas/KeyActive"
+        created_at:
+          $ref: "#/components/schemas/KeyCreatedAt"
+        last_used:
+          $ref: "#/components/schemas/KeyLastUsed"
+        scopes:
+          $ref: "#/components/schemas/KeyScopes"
+    KeyID:
+      description: Unique identifier of the API key, it's the public key of the Ed25519 key pair
+      type: string
+      minLength: 1
+      example: "SOLqeGfbG8XRHumB3QQ6zf2G3ybNDG0RiGiC1otYClQ="
+    KeyName:
+      description: User assigned name of the Key.
+      type: string
+      minLength: 1
+      example: "Test API Key"
+    KeyActive:
+      description: If the key is active or if it has been temporaly disabled.
+      type: boolean
+      minLength: 1
+    KeyCreatedAt:
+      description: Key creation date.
+      type: string
+      format: date
+      minLength: 1
+    KeyLastUsed:
+      description: Last time the key was utilized.
+      type: string
+      format: date
+      minLength: 1
+    KeyScopes:
+      description: Space separated list of permission scopes of the key.
+      type: string
+      minLength: 1
+      example: "keys devices profiles"
+    Devices:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/DeviceID"
+        owner_id:
+          $ref: "#/components/schemas/OwnerID"
+        key_id:
+          $ref: "#/components/schemas/KeyID"
+        name:
+          $ref: "#/components/schemas/DeviceName"
+        notification_token:
+          $ref: "#/components/schemas/DeviceNotificationToken"
+    DeviceID:
+      description: Unique identifier of the Device
+      type: string
+      minLength: 1
+      example: "b0f2f291-74d5-403b-9a82-60961438ca95"
+    DeviceName:
+      description: User assigned name of the Device.
+      type: string
+      minLength: 1
+      example: "My iPhone"
+    DeviceNotificationToken:
+      description: Token utilized to receive Push Notifications.
+      type: string
+      minLength: 1
+      example: "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1..."
     IdentityProofs:
       type: object
       properties:
-        address:
-          $ref: "#/components/schemas/Address"
-        tickerSymbol:
-          $ref: "#/components/schemas/TickerSymbol"
-        balance:
-          $ref: "#/components/schemas/BalanceZero"
-        accountName:
-          $ref: "#/components/schemas/AccountName"
+        proof_id:
+          $ref: "#/components/schemas/ProofID"
+        profile_id:
+          $ref: "#/components/schemas/ProfileID"
+        type:
+          $ref: "#/components/schemas/ProofType"
+        created_at:
+          $ref: "#/components/schemas/ProofCreatedAt"
+        emission_date:
+          $ref: "#/components/schemas/ProofEmissionDate"
+        expiration_date:
+          $ref: "#/components/schemas/ProofExpirationDate"
+        status:
+          $ref: "#/components/schemas/ProofStatus"
+        url:
+          $ref: "#/components/schemas/ProofURL"
+        validator_id:
+          $ref: "#/components/schemas/ProofValidatorID"
+    ProofID:
+      description: Unique identifier of the Proof
+      type: string
+      minLength: 1
+      example: "f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b"
+    ProofType:
+      description: The type of proof.
+      type: string
+      minLength: 1
+      example: "PASSPORT"
+      enum:
+        - GOVERNMENT_ID
+        - PASSPORT
+        - ADDRESS_PROOF
+    ProofCreatedAt:
+      description: Proof creation date.
+      type: string
+      format: date
+      minLength: 1
+    ProofEmissionDate:
+      description: When the submitted proof was emitted by the authority.
+      type: string
+      format: date
+      minLength: 1
+    ProofExpirationDate:
+      description: When the submitted proof is going to expire.
+      type: string
+      format: date
+      minLength: 1
+    ProofStatus:
+      description: Status of the proof.
+      type: string
+      minLength: 1
+      enum:
+        - PENDING
+        - APPROVED
+        - REJECTED
+    ProofURL:
+      description: URL of where the submitted image of the proof is stored.
+      type: string
+      minLength: 1
+      example: "www.cacaoid.com/bucket/321dufas89"
+    ProofValidatorID:
+      description: Unique identifier of the proof validator.
+      type: string
+      minLength: 1
+      example: "b2aea9538714f00227c33f6a4c615aa708555dee88f5a59381745255d648c7cf"
     Applications:
       type: object
       properties:
-        accountName:
-          $ref: "#/components/schemas/AccountNameEmergency"
+        owner_id:
+          $ref: "#/components/schemas/OwnerID"
 
     Address:
       description: Unique identifier of an account to which monetary transactions are delivered.
@@ -1159,16 +1333,31 @@ components:
         format: date-time
 
   securitySchemes:
-    oAuth:
-      description: "Blah"
+    OAuth:
+      description:
+        CacaoID implements the OAuth protocol. A user can create and login to his CacaoID account by utilizing an official OAuth client.
+        After the he can grant certain permissions utilizing scopes. Once he has logged in successfuly, the server will return a token that can be used for accessing the CacaoID API.
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: "http://example.com/api/oauth/dialog"
+        authorizationCode:
+          tokenUrl: "http://testnet.cacaoid.com/oauth2/token"
+          authorizationUrl: "http://testnet.cacaoid.com/oauth2/auth"
           scopes:
             "read:users": read users info
             "write:users": modify or remove users
-    SecretApiKey:
+    API Key:
+      description:
+        The CacaoID API can be accessed utilizing API Keys which are based on the Ed25519 public-key system.
+        An API Key can be created by making a request to the `create key` endpoint while utilizing a valid OAuth Token.
+        The server will return a Key pair that contains both the Public Key which is the identifier of the API Key and a Private Key which is used to sign requests.
+        When utilizing an API Key for Autorization, the API Key must be included in the headers. **Example** `Authorization:` `ApiKey-v1 etRWGzf+AY8m6DHalxO28aTDi0PXRi7w3L4F0XKSf/Y=`
       type: apiKey
       in: header
-      name: api_key
+      name: Authorization
+    Signature:
+      description:
+        When utilizing an API Key for Authorization, a valid signature must be provided in the headers alongside the API Key. Signatures can be generated utilizing the Private Key and one of
+        our official libraries. **Example** `Signature:` `9a75ZaHd8ULqtZfgVounQItJ3eSqMd25IDe6tNizUJj52ZdlEBP4tjMtUhGi/q84WlrFxrbL3EuqqNitDX7KBQ==`
+      type: apiKey
+      in: header
+      name: Signature
