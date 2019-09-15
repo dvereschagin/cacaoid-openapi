@@ -61,16 +61,16 @@ tags:
       A `Key` allows a user to authorize requests and transactions. `Keys` are comprised from a Ed22519 key pair and a Transaction Key. The key pair its utilized for signing requests, while the Transaction Key must be 
       utilized for authorizing monetary transactions. After creation, the Ed25519 Public Key is stored in our server, and the Private Key is sent alongside the Transaction Key back the client. 
       It is expected for the client to save the Private Key and the Transaction Key as these are unrecoverable. A user will need to create a new Key if he loses this credentials.
-      <SchemaDefinition schemaRef="#/components/schemas/Keys" />
+      <SchemaDefinition schemaRef="#/components/schemas/Key" />
   - name: Device
     description: |
       A `Device` is comprised of a `Key` and a couple of additional fields. Devices serve the same functions as keys but also allow for the reception of push notifications.
-      <SchemaDefinition schemaRef="#/components/schemas/Devices" />
+      <SchemaDefinition schemaRef="#/components/schemas/Device" />
   - name: Identity Proof
     description: |
       Identity Proofs are as the name suggest, physical evidence that the user is the legal person he claims to be.
       Submitting Identity Proofs allows for the verification of the user account.
-      <SchemaDefinition schemaRef="#/components/schemas/IdentityProofs" />
+      <SchemaDefinition schemaRef="#/components/schemas/IdentityProof" />
   - name: Application
     description: |
       Applications are the official way to create a Cacao intrgration. **Unsopported for now**
@@ -83,18 +83,18 @@ x-tagGroups:
       - Device
       - Identity Proof
       - Application
-  - name: "User"
+  - name: "User Owned Resources"
     tags:
       - Profiles
-      - Devices
-      - Identity Proofs
-  - name: "Credentials"
-    tags:
       - Keys
+      - Devices
+  - name: "Profile Owned Resources"
+    tags:
+      - Identity Proofs
       - Applications
 security:
   - oAuth: []
-  - SecretApiKey: []
+  - APIKey: []
 servers:
   - url: "https://testnet.cacaoid.com/api/v1/"
     description: Testing environment
@@ -134,13 +134,13 @@ paths:
       tags:
         - Profiles
       summary: Create a profile
-      description: Creates a new business profile
+      description: Creates a new profile
       operationId: createProfile
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/CreateProfileRequest"
         required: true
       responses:
         "200":
@@ -148,7 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Profile"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -167,7 +167,7 @@ paths:
       tags:
         - Profiles
       summary: Get a profile
-      description: Retrieve an existing Profile its ID.
+      description: Get an existing profile from its ID.
       operationId: getProfile
       responses:
         "200":
@@ -175,7 +175,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Profile"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -198,7 +198,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/UpdateProfileRequest"
         required: true
       responses:
         "200":
@@ -206,7 +206,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Profile"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -228,11 +228,6 @@ paths:
       summary: Delete a profile
       description: Delete a profile
       operationId: deleteProfile
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Temporal"
       responses:
         "200":
           description: OK
@@ -264,7 +259,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/AuthorizeOperatorRequest"
         required: true
       responses:
         "200":
@@ -272,7 +267,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/AuthorizeOperatorResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -297,7 +292,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/RevokeOperatorRequest"
         required: true
       responses:
         "200":
@@ -305,7 +300,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/RevokeOperatorResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -335,7 +330,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Profile"
+                  $ref: "#/components/schemas/Device"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -356,7 +351,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/CreateDeviceRequest"
         required: true
       responses:
         "200":
@@ -364,7 +359,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Device"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -383,7 +378,7 @@ paths:
       tags:
         - Devices
       summary: Get a device
-      description: Retrieve an existing Device with its ID.
+      description: Retrieve an existing Device
       operationId: getDevice
       responses:
         "200":
@@ -391,7 +386,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Device"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -414,7 +409,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/UpdateDeviceRequest"
         required: true
       responses:
         "200":
@@ -422,7 +417,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Device"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -444,11 +439,6 @@ paths:
       summary: Delete a device
       description: Delete a device
       operationId: deleteDevice
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Temporal"
       responses:
         "200":
           description: OK
@@ -485,7 +475,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Profile"
+                  $ref: "#/components/schemas/IdentityProof"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -507,7 +497,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/CreateProofRequest"
         required: true
       responses:
         "200":
@@ -515,7 +505,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/IdentityProof"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -533,8 +523,8 @@ paths:
     get:
       tags:
         - Identity Proofs
-      summary: Get a profile
-      description: Retrieve an existing Profile its ID.
+      summary: Get an identity proof
+      description: Retrieve an existing identity proof.
       operationId: getProof
       responses:
         "200":
@@ -542,7 +532,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/IdentityProof"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -562,11 +552,6 @@ paths:
       summary: Delete an identity proof
       description: Delete a indentity proof
       operationId: deleteProof
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Temporal"
       responses:
         "200":
           description: OK
@@ -598,7 +583,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/ApproveProofRequest"
         required: true
       responses:
         "200":
@@ -606,7 +591,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/IdentityProof"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -631,7 +616,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/RejectProofRequest"
         required: true
       responses:
         "200":
@@ -639,7 +624,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/IdentityProof"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -669,7 +654,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Profile"
+                  $ref: "#/components/schemas/Key"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -690,7 +675,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Temporal"
+              $ref: "#/components/schemas/CreateKeyRequest"
         required: true
       responses:
         "200":
@@ -698,7 +683,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Key"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -717,7 +702,7 @@ paths:
       tags:
         - Keys
       summary: Get a key
-      description: Retrieve an existing Key from its ID.
+      description: Retrieve an existing key.
       operationId: getKey
       responses:
         "200":
@@ -725,7 +710,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Temporal"
+                $ref: "#/components/schemas/Key"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -745,11 +730,6 @@ paths:
       summary: Delete a key
       description: Delete a key
       operationId: deleteKey
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Temporal"
       responses:
         "200":
           description: OK
@@ -786,7 +766,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Profile"
+                  $ref: "#/components/schemas/Temporal"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -939,17 +919,14 @@ components:
       description: Date of birth of the person or buisness
       type: string
       format: date
-      minLength: 1
     Email:
       description: Public email of the profile.
       type: string
       format: email
-      minLength: 1
       example: "juan@rulfo.com"
     Phone:
       description: Public phone number of the profile.
       type: string
-      minLength: 1
       example: "5555555555"
     VerificationLevel:
       description: The level of verification of the profile.
@@ -961,7 +938,64 @@ components:
         - MARGINAL
         - FULL
         - ULTIMATE
-    Keys:
+    CreateProfileRequest:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/ProfileType"
+        display_name:
+          $ref: "#/components/schemas/DisplayName"
+        birthdate:
+          $ref: "#/components/schemas/Birthdate"
+        email:
+          $ref: "#/components/schemas/Email"
+        phone:
+          $ref: "#/components/schemas/Phone"
+    UpdateProfileRequest:
+      type: object
+      properties:
+        display_name:
+          $ref: "#/components/schemas/DisplayName"
+        birthdate:
+          $ref: "#/components/schemas/Birthdate"
+        email:
+          $ref: "#/components/schemas/Email"
+        phone:
+          $ref: "#/components/schemas/Phone"
+    AuthorizeOperatorRequest:
+      type: object
+      properties:
+        profile_id:
+          $ref: "#/components/schemas/ProfileID"
+        scopes:
+          $ref: "#/components/schemas/AuthorizationScopes"
+    AuthorizeOperatorResponse:
+      type: object
+      properties:
+        profile_id:
+          $ref: "#/components/schemas/ProfileID"
+        scopes:
+          $ref: "#/components/schemas/AuthorizationScopes"
+    AuthorizationScopes:
+      description: Space separated list of the permissions to be assigned or revoked for the operator
+      type: string
+      minLength: 1
+      example: "devices keys"
+    RevokeOperatorRequest:
+      type: object
+      properties:
+        profile_id:
+          $ref: "#/components/schemas/ProfileID"
+        scopes:
+          $ref: "#/components/schemas/AuthorizationScopes"
+    RevokeOperatorResponse:
+      type: object
+      properties:
+        profile_id:
+          $ref: "#/components/schemas/ProfileID"
+        scopes:
+          $ref: "#/components/schemas/AuthorizationScopes"
+    Key:
       type: object
       properties:
         id:
@@ -1007,7 +1041,14 @@ components:
       type: string
       minLength: 1
       example: "keys devices profiles"
-    Devices:
+    CreateKeyRequest:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/KeyName"
+        scopes:
+          $ref: "#/components/schemas/KeyScopes"
+    Device:
       type: object
       properties:
         id:
@@ -1035,7 +1076,21 @@ components:
       type: string
       minLength: 1
       example: "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1..."
-    IdentityProofs:
+    CreateDeviceRequest:
+      type: object
+      properties:
+        device_name:
+          $ref: "#/components/schemas/DeviceName"
+        notification_token:
+          $ref: "#/components/schemas/DeviceNotificationToken"
+    UpdateDeviceRequest:
+      type: object
+      properties:
+        device_name:
+          $ref: "#/components/schemas/DeviceName"
+        notification_token:
+          $ref: "#/components/schemas/DeviceNotificationToken"
+    IdentityProof:
       type: object
       properties:
         proof_id:
@@ -1103,6 +1158,28 @@ components:
       type: string
       minLength: 1
       example: "b2aea9538714f00227c33f6a4c615aa708555dee88f5a59381745255d648c7cf"
+    CreateProofRequest:
+      type: object
+      properties:
+        profile_id:
+          $ref: "#/components/schemas/ProfileID"
+        type:
+          $ref: "#/components/schemas/ProofType"
+        emission_date:
+          $ref: "#/components/schemas/ProofEmissionDate"
+        expiration_date:
+          $ref: "#/components/schemas/ProofExpirationDate"
+    ApproveProofRequest:
+      type: object
+      properties:
+        proof_id:
+          $ref: "#/components/schemas/ProofID"
+    RejectProofRequest:
+      type: object
+      properties:
+        proof_id:
+          $ref: "#/components/schemas/ProofID"
+
     Applications:
       type: object
       properties:
@@ -1333,7 +1410,7 @@ components:
         format: date-time
 
   securitySchemes:
-    OAuth:
+    oAuth:
       description:
         CacaoID implements the OAuth protocol. A user can create and login to his CacaoID account by utilizing an official OAuth client.
         After the he can grant certain permissions utilizing scopes. Once he has logged in successfuly, the server will return a token that can be used for accessing the CacaoID API.
@@ -1345,7 +1422,7 @@ components:
           scopes:
             "read:users": read users info
             "write:users": modify or remove users
-    API Key:
+    APIKey:
       description:
         The CacaoID API can be accessed utilizing API Keys which are based on the Ed25519 public-key system.
         An API Key can be created by making a request to the `create key` endpoint while utilizing a valid OAuth Token.
