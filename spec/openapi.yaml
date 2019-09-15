@@ -576,9 +576,9 @@ paths:
     post:
       tags:
         - Identity Proofs
-      summary: Accept Proof
-      description: Accept a proof as valid
-      operationId: acceptProof
+      summary: Approve Proof
+      description: Mark a proof as valid
+      operationId: approveProof
       requestBody:
         content:
           application/json:
@@ -609,8 +609,8 @@ paths:
     post:
       tags:
         - Identity Proofs
-      summary: Reject Proof
-      description: Reject a proof
+      summary: Reject a Proof
+      description: Reject a proof as invalid
       operationId: rejectProof
       requestBody:
         content:
