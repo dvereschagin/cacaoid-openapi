@@ -13,30 +13,30 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
     "x-logo": {
-      "url": "https://storage.googleapis.com/cacao-static-content/logos/cacao-id/ci_logo_green.png"
+      "url": "https://storage.googleapis.com/cacao-static-content/logos/red-cacao/cr_logo_green.png"
     },
-    "description": "# Introduction\nThe Cacao ID API implements the OAuth 2 protocol and is built on HTTP around REST and resource oriented URLs. \nIt accepts form-encoded request bodies and returns JSON responses.\nStandard HTTP response codes and verbs are used. \nYou can try the Cacao ID API in its testnet environment.\nEach environment has its own accounts and objects, so you will need\nto create a CacaoID account for the testnet environment.\n\n# Authentication\nCacaoID is built utilizing the OAuth 2.0 protocol. \n\nThere are two forms of authentication:\n- OAuth2 with Credentails\n- API Keys\n\nOnce a user has created a Cacao ID account he can create API keys to allow access without the need for his credentials. As\na general rule, if a humans is behind the interaction OAuth2 should be used while API Keys must be reserved for systems.\n\n# Pagination\nTODO\n\n# SDKs\nTODO\n\n# Getting Started\nTo integrate with the CacaoID API the first step required is to have a Cacao OAuth Client registered. This is done by one of our executives who will provide you with the credentials.\nOnce you have your credentials you are required to implement a OAuth Client in your mobile or web application utilizing one of the official OAuth libraries. After you incorporate the `OAuth \nAuthorization Code Flow` into your application you should be able to register or login with a CacaoID account. \n\nOnce you have logged in in your account, you will get an OAuth token, which can be used to interact with the API. However, for security concerns OAuth tokens have short expiration times, so\nit is recommended that you create an `API Key` or a `Device`. An `API Key` is a Ed25519 key pair that allows authorization utilizing signatures, so instead of having to refresh the OAuth token, \nthe client stores a Private Key which is utilized to generate the authorizing signature. A `Device` has the same functionality as an `API Key` but is intended for Mobile Apps that can receive\npush notifications. \n\nWe recommend the use of API Keys only on devices where the storage of secrets can be secure such as Mobile Apps or Server side applications. Web Applications (browser based)\nshould stick to using OAuth even if the sessions are short.\n"
+    "description": "# Introduction\nThe Cacao ID API implements the OAuth 2 protocol and is built on HTTP around REST and resource oriented URLs. \nIt accepts form-encoded request bodies and returns JSON responses.\nStandard HTTP response codes and verbs are used. \nYou can try the Cacao ID API in its testnet environment.\nEach environment has its own accounts and objects, so you will need\nto create a CacaoID account for the testnet environment.\n\n# Authentication\nCacaoID is built utilizing the OAuth 2.0 protocol. \n\nThere are two forms of authentication:\n- OAuth2 with Credentails\n- API Keys\n\nOnce a user has created a Cacao ID account he can create API keys to allow access without the need for his credentials. As\na general rule, if a humans is behind the interaction OAuth2 should be used while API Keys must be reserved for systems.\n\n# Pagination\nTODO\n\n# SDKs\nTODO\n\n# Getting Started\nTODO\n"
   },
   "tags": [
     {
       "name": "Profile",
-      "description": "Collection of settings and information associated with a user. There are two types of profiles, \npersonal profiles and business profiles. A user can only have one personal profile, but multiple business profiles.\nA personal profile is created automatically for a user when he creates a Cacao ID account. \n<SchemaDefinition schemaRef=\"#/components/schemas/Profile\" />\n"
+      "description": "Collection of settings and information associated with a user. There are two types of profiles, \npersonal profiles and business profiles. A personal profile is created automatically for a user when\nhe creates a Cacao ID account. Buiness profiles need to be created separatelly.\n<SchemaDefinition schemaRef=\"#/components/schemas/Profile\" />\n"
     },
     {
-      "name": "Key",
-      "description": "A `Key` allows a user to authorize requests and transactions. `Keys` are comprised from a Ed22519 key pair and a Transaction Key. The key pair its utilized for signing requests, while the Transaction Key must be \nutilized for authorizing monetary transactions. After creation, the Ed25519 Public Key is stored in our server, and the Private Key is sent alongside the Transaction Key back the client. \nIt is expected for the client to save the Private Key and the Transaction Key as these are unrecoverable. A user will need to create a new Key if he loses this credentials.\n<SchemaDefinition schemaRef=\"#/components/schemas/Key\" />\n"
+      "name": "Devices",
+      "description": "Transactions represent all monetary transfers of value from a Cacao Account \n<SchemaDefinition schemaRef=\"#/components/schemas/Devices\" />\n"
     },
     {
-      "name": "Device",
-      "description": "A `Device` is comprised of a `Key` and a couple of additional fields. Devices serve the same functions as keys but also allow for the reception of push notifications.\n<SchemaDefinition schemaRef=\"#/components/schemas/Device\" />\n"
+      "name": "Keys",
+      "description": "External Accounts are third party integrations such as banking accounts or debit cards that can be used by Cacao Accounts as a funding or withdraw method.\n<SchemaDefinition schemaRef=\"#/components/schemas/Keys\" />\n"
     },
     {
-      "name": "Identity Proof",
-      "description": "Identity Proofs are as the name suggest, physical evidence that the user is the legal person he claims to be.\nSubmitting Identity Proofs allows for the verification of the user account.\n<SchemaDefinition schemaRef=\"#/components/schemas/IdentityProof\" />\n"
+      "name": "Identity Proofs",
+      "description": "Payment Requests are soliciations for payments that can be fullfilled by the recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/IdentityProofs\" />\n"
     },
     {
-      "name": "Application",
-      "description": "Applications are the official way to create a Cacao intrgration. **Unsopported for now**\n<SchemaDefinition schemaRef=\"#/components/schemas/Applications\" />\n"
+      "name": "Applications",
+      "description": "Prepays are payments done in advance that can be fullfilled by the recipient.\n<SchemaDefinition schemaRef=\"#/components/schemas/Applications\" />\n"
     }
   ],
   "x-tagGroups": [
@@ -44,25 +44,16 @@
       "name": "Core Resources",
       "tags": [
         "Profile",
-        "Key",
-        "Device",
-        "Identity Proof",
-        "Application"
-      ]
-    },
-    {
-      "name": "User Owned Resources",
-      "tags": [
-        "Profiles",
+        "Devices",
         "Keys",
-        "Devices"
-      ]
-    },
-    {
-      "name": "Profile Owned Resources",
-      "tags": [
         "Identity Proofs",
         "Applications"
+      ]
+    },
+    {
+      "name": "Profile",
+      "tags": [
+        "Profiles"
       ]
     }
   ],
@@ -71,7 +62,7 @@
       "oAuth": []
     },
     {
-      "APIKey": []
+      "SecretApiKey": []
     }
   ],
   "servers": [
@@ -80,7 +71,7 @@
       "description": "Testing environment"
     },
     {
-      "url": "https://www.cacaoid.com/api/v1",
+      "url": "https://production.cacaoid.com/api/v1",
       "description": "Production environment"
     }
   ],
@@ -90,9 +81,9 @@
         "tags": [
           "Profiles"
         ],
-        "summary": "List Profiles",
-        "description": "Returns a list of all your profiles sorted chronologicaly by creation date.",
-        "operationId": "listProfiles",
+        "summary": "List Cacao accounts",
+        "description": "Returns a list of all your Cacao accounts sorted chronologicaly by creation date.",
+        "operationId": "listCacaoAccounts",
         "parameters": [
           {
             "$ref": "#/components/parameters/limit"
@@ -131,1579 +122,87 @@
             "$ref": "#/components/responses/ServerError"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Profiles"
-        ],
-        "summary": "Create a profile",
-        "description": "Creates a new profile",
-        "operationId": "createProfile",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProfileRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Profile"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/profiles/{profile_id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/profileID"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Profiles"
-        ],
-        "summary": "Get a profile",
-        "description": "Get an existing profile from its ID.",
-        "operationId": "getProfile",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Profile"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Profiles"
-        ],
-        "summary": "Update a profile",
-        "description": "Update an existing profile",
-        "operationId": "updateProfile",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateProfileRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Profile"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Profiles"
-        ],
-        "summary": "Delete a profile",
-        "description": "Delete a profile",
-        "operationId": "deleteProfile",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/profiles/{profile_id}/authorizeOperator": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/profileID"
-        }
-      ],
-      "post": {
-        "tags": [
-          "Profiles"
-        ],
-        "summary": "Authorize profile operator",
-        "description": "Authorize a profile with either read only or full access permissions",
-        "operationId": "authorizeProfileOperator",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AuthorizeOperatorRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthorizeOperatorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/profiles/{profile_id}/revokeOperator": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/profileID"
-        }
-      ],
-      "post": {
-        "tags": [
-          "Profiles"
-        ],
-        "summary": "Revoke profile operator",
-        "description": "Revoke a profile operator",
-        "operationId": "revokeProfileOperator",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RevokeOperatorRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RevokeOperatorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/devices/": {
-      "get": {
-        "tags": [
-          "Devices"
-        ],
-        "summary": "List Devices",
-        "description": "Returns a list of all your devices sorted chronologicaly by creation date.",
-        "operationId": "listDevices",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/limit"
-          },
-          {
-            "$ref": "#/components/parameters/offset"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Device"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Devices"
-        ],
-        "summary": "Create a device",
-        "description": "Creates a new device",
-        "operationId": "createDevice",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateDeviceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Device"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/devices/{device_id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/deviceID"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Devices"
-        ],
-        "summary": "Get a device",
-        "description": "Retrieve an existing Device",
-        "operationId": "getDevice",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Device"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Devices"
-        ],
-        "summary": "Update a device",
-        "description": "Update an existing device",
-        "operationId": "updateDevice",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateDeviceRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Device"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Devices"
-        ],
-        "summary": "Delete a device",
-        "description": "Delete a device",
-        "operationId": "deleteDevice",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/identity_proofs/": {
-      "get": {
-        "tags": [
-          "Identity Proofs"
-        ],
-        "summary": "List identity proofs",
-        "description": "Returns a list of all your identity proofs sorted chronologicaly by creation date.",
-        "operationId": "listProofs",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/limit"
-          },
-          {
-            "$ref": "#/components/parameters/offset"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IdentityProof"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Identity Proofs"
-        ],
-        "summary": "Create an identity proof",
-        "description": "Creates a new identity proof",
-        "operationId": "createProof",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProofRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityProof"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/identity_proofs/{proof_id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/proofID"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Identity Proofs"
-        ],
-        "summary": "Get an identity proof",
-        "description": "Retrieve an existing identity proof.",
-        "operationId": "getProof",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityProof"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Identity Proofs"
-        ],
-        "summary": "Delete an identity proof",
-        "description": "Delete a indentity proof",
-        "operationId": "deleteProof",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/identity_proofs/{proof_id}/approve": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/proofID"
-        }
-      ],
-      "post": {
-        "tags": [
-          "Identity Proofs"
-        ],
-        "summary": "Accept Proof",
-        "description": "Accept a proof as valid",
-        "operationId": "acceptProof",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApproveProofRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityProof"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/identity_proofs/{proof_id}/reject": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/proofID"
-        }
-      ],
-      "post": {
-        "tags": [
-          "Identity Proofs"
-        ],
-        "summary": "Reject Proof",
-        "description": "Reject a proof",
-        "operationId": "rejectProof",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RejectProofRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityProof"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/keys/": {
-      "get": {
-        "tags": [
-          "Keys"
-        ],
-        "summary": "List Keys",
-        "description": "Returns a list of all your keys sorted chronologicaly by creation date.",
-        "operationId": "listKeys",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/limit"
-          },
-          {
-            "$ref": "#/components/parameters/offset"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Key"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Keys"
-        ],
-        "summary": "Create a key",
-        "description": "Creates a new key",
-        "operationId": "createKey",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateKeyRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Key"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/keys/{key_id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/keyID"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Keys"
-        ],
-        "summary": "Get a key",
-        "description": "Retrieve an existing key.",
-        "operationId": "getKey",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Key"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Keys"
-        ],
-        "summary": "Delete a key",
-        "description": "Delete a key",
-        "operationId": "deleteKey",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/applications/": {
-      "get": {
-        "tags": [
-          "Applications"
-        ],
-        "summary": "List Applications",
-        "description": "Returns a list of all your applications sorted chronologicaly by creation date.",
-        "operationId": "listApplications",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/limit"
-          },
-          {
-            "$ref": "#/components/parameters/offset"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Temporal"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Applications"
-        ],
-        "summary": "Create an application",
-        "description": "Creates a new application",
-        "operationId": "createApplication",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Temporal"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Temporal"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      }
-    },
-    "/applications/{application_id}": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/applicationID"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Applications"
-        ],
-        "summary": "Get an application",
-        "description": "Retrieve an existing application with its ID.",
-        "operationId": "getApplication",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Temporal"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Applications"
-        ],
-        "summary": "Delete an application",
-        "description": "Delete an application",
-        "operationId": "deleteApplication",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Temporal"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "402": {
-            "$ref": "#/components/responses/RequestFailed"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "500": {
-            "$ref": "#/components/responses/ServerError"
-          }
-        }
       }
     }
   },
   "components": {
     "schemas": {
-      "Temporal": {
-        "description": "Placeholder",
-        "type": "string",
-        "minLength": 1,
-        "example": "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
-      },
       "Profile": {
         "type": "object",
         "properties": {
-          "id": {
+          "profileID": {
             "$ref": "#/components/schemas/ProfileID"
-          },
-          "owner_id": {
-            "$ref": "#/components/schemas/OwnerID"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ProfileType"
-          },
-          "display_name": {
-            "$ref": "#/components/schemas/DisplayName"
-          },
-          "birthdate": {
-            "$ref": "#/components/schemas/Birthdate"
-          },
-          "email": {
-            "$ref": "#/components/schemas/Email"
-          },
-          "phone": {
-            "$ref": "#/components/schemas/Phone"
-          },
-          "verification_level": {
-            "$ref": "#/components/schemas/VerificationLevel"
           }
         }
       },
       "ProfileID": {
-        "description": "Base64 encoded unique identifier of a profile.",
+        "description": "Unique and inmutable identifier of a profile",
         "type": "string",
         "minLength": 1,
         "example": "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
       },
-      "OwnerID": {
-        "description": "Base64 encoded unique identifier of the user that owns the resource.",
+      "Owner": {
+        "description": "Unique identifier of user that owns the profile",
         "type": "string",
         "minLength": 1,
-        "example": "b57665d54f77faa8ea3b8588c590b5acf1c29a2008fbede8b770d8ddbf5d54d1"
+        "example": "owner@cacaoid.com"
       },
       "ProfileType": {
-        "description": "The type of profile. Personal profiles are for humans, while business profiles are for an organization or business.",
+        "description": "Type of profile",
         "type": "string",
         "minLength": 1,
-        "example": "PERSONAL",
-        "enum": [
-          "PERSONAL",
-          "BUSINESS"
-        ]
+        "example": "PERSON"
       },
-      "DisplayName": {
-        "description": "Public facing diplay name of the profile.",
-        "type": "string",
-        "minLength": 1,
-        "example": "Juan Rulfo"
-      },
-      "Birthdate": {
-        "description": "Date of birth of the person or buisness",
-        "type": "string",
-        "format": "date"
-      },
-      "Email": {
-        "description": "Public email of the profile.",
-        "type": "string",
-        "format": "email",
-        "example": "juan@rulfo.com"
-      },
-      "Phone": {
-        "description": "Public phone number of the profile.",
-        "type": "string",
-        "example": "5555555555"
-      },
-      "VerificationLevel": {
-        "description": "The level of verification of the profile.",
-        "type": "string",
-        "minLength": 1,
-        "example": "FULL",
-        "enum": [
-          "NONE",
-          "MARGINAL",
-          "FULL",
-          "ULTIMATE"
-        ]
-      },
-      "CreateProfileRequest": {
+      "Devices": {
         "type": "object",
         "properties": {
-          "type": {
-            "$ref": "#/components/schemas/ProfileType"
+          "address": {
+            "$ref": "#/components/schemas/Address"
           },
-          "display_name": {
-            "$ref": "#/components/schemas/DisplayName"
+          "tickerSymbol": {
+            "$ref": "#/components/schemas/TickerSymbol"
           },
-          "birthdate": {
-            "$ref": "#/components/schemas/Birthdate"
+          "balance": {
+            "$ref": "#/components/schemas/BalanceZero"
           },
-          "email": {
-            "$ref": "#/components/schemas/Email"
-          },
-          "phone": {
-            "$ref": "#/components/schemas/Phone"
+          "accountName": {
+            "$ref": "#/components/schemas/AccountNameEmergency"
           }
         }
       },
-      "UpdateProfileRequest": {
+      "Keys": {
         "type": "object",
         "properties": {
-          "display_name": {
-            "$ref": "#/components/schemas/DisplayName"
+          "tickerSymbol": {
+            "$ref": "#/components/schemas/TickerSymbol"
           },
-          "birthdate": {
-            "$ref": "#/components/schemas/Birthdate"
-          },
-          "email": {
-            "$ref": "#/components/schemas/Email"
-          },
-          "phone": {
-            "$ref": "#/components/schemas/Phone"
+          "accountName": {
+            "$ref": "#/components/schemas/AccountName"
           }
         }
       },
-      "AuthorizeOperatorRequest": {
+      "IdentityProofs": {
         "type": "object",
         "properties": {
-          "profile_id": {
-            "$ref": "#/components/schemas/ProfileID"
+          "address": {
+            "$ref": "#/components/schemas/Address"
           },
-          "scopes": {
-            "$ref": "#/components/schemas/AuthorizationScopes"
-          }
-        }
-      },
-      "AuthorizeOperatorResponse": {
-        "type": "object",
-        "properties": {
-          "profile_id": {
-            "$ref": "#/components/schemas/ProfileID"
+          "tickerSymbol": {
+            "$ref": "#/components/schemas/TickerSymbol"
           },
-          "scopes": {
-            "$ref": "#/components/schemas/AuthorizationScopes"
-          }
-        }
-      },
-      "AuthorizationScopes": {
-        "description": "Space separated list of the permissions to be assigned or revoked for the operator",
-        "type": "string",
-        "minLength": 1,
-        "example": "devices keys"
-      },
-      "RevokeOperatorRequest": {
-        "type": "object",
-        "properties": {
-          "profile_id": {
-            "$ref": "#/components/schemas/ProfileID"
+          "balance": {
+            "$ref": "#/components/schemas/BalanceZero"
           },
-          "scopes": {
-            "$ref": "#/components/schemas/AuthorizationScopes"
-          }
-        }
-      },
-      "RevokeOperatorResponse": {
-        "type": "object",
-        "properties": {
-          "profile_id": {
-            "$ref": "#/components/schemas/ProfileID"
-          },
-          "scopes": {
-            "$ref": "#/components/schemas/AuthorizationScopes"
-          }
-        }
-      },
-      "Key": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/KeyID"
-          },
-          "owner_id": {
-            "$ref": "#/components/schemas/OwnerID"
-          },
-          "name": {
-            "$ref": "#/components/schemas/KeyName"
-          },
-          "active": {
-            "$ref": "#/components/schemas/KeyActive"
-          },
-          "created_at": {
-            "$ref": "#/components/schemas/KeyCreatedAt"
-          },
-          "last_used": {
-            "$ref": "#/components/schemas/KeyLastUsed"
-          },
-          "scopes": {
-            "$ref": "#/components/schemas/KeyScopes"
-          }
-        }
-      },
-      "KeyID": {
-        "description": "Unique identifier of the API key, it's the public key of the Ed25519 key pair",
-        "type": "string",
-        "minLength": 1,
-        "example": "SOLqeGfbG8XRHumB3QQ6zf2G3ybNDG0RiGiC1otYClQ="
-      },
-      "KeyName": {
-        "description": "User assigned name of the Key.",
-        "type": "string",
-        "minLength": 1,
-        "example": "Test API Key"
-      },
-      "KeyActive": {
-        "description": "If the key is active or if it has been temporaly disabled.",
-        "type": "boolean",
-        "minLength": 1
-      },
-      "KeyCreatedAt": {
-        "description": "Key creation date.",
-        "type": "string",
-        "format": "date",
-        "minLength": 1
-      },
-      "KeyLastUsed": {
-        "description": "Last time the key was utilized.",
-        "type": "string",
-        "format": "date",
-        "minLength": 1
-      },
-      "KeyScopes": {
-        "description": "Space separated list of permission scopes of the key.",
-        "type": "string",
-        "minLength": 1,
-        "example": "keys devices profiles"
-      },
-      "CreateKeyRequest": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "$ref": "#/components/schemas/KeyName"
-          },
-          "scopes": {
-            "$ref": "#/components/schemas/KeyScopes"
-          }
-        }
-      },
-      "Device": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/DeviceID"
-          },
-          "owner_id": {
-            "$ref": "#/components/schemas/OwnerID"
-          },
-          "key_id": {
-            "$ref": "#/components/schemas/KeyID"
-          },
-          "name": {
-            "$ref": "#/components/schemas/DeviceName"
-          },
-          "notification_token": {
-            "$ref": "#/components/schemas/DeviceNotificationToken"
-          }
-        }
-      },
-      "DeviceID": {
-        "description": "Unique identifier of the Device",
-        "type": "string",
-        "minLength": 1,
-        "example": "b0f2f291-74d5-403b-9a82-60961438ca95"
-      },
-      "DeviceName": {
-        "description": "User assigned name of the Device.",
-        "type": "string",
-        "minLength": 1,
-        "example": "My iPhone"
-      },
-      "DeviceNotificationToken": {
-        "description": "Token utilized to receive Push Notifications.",
-        "type": "string",
-        "minLength": 1,
-        "example": "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1..."
-      },
-      "CreateDeviceRequest": {
-        "type": "object",
-        "properties": {
-          "device_name": {
-            "$ref": "#/components/schemas/DeviceName"
-          },
-          "notification_token": {
-            "$ref": "#/components/schemas/DeviceNotificationToken"
-          }
-        }
-      },
-      "UpdateDeviceRequest": {
-        "type": "object",
-        "properties": {
-          "device_name": {
-            "$ref": "#/components/schemas/DeviceName"
-          },
-          "notification_token": {
-            "$ref": "#/components/schemas/DeviceNotificationToken"
-          }
-        }
-      },
-      "IdentityProof": {
-        "type": "object",
-        "properties": {
-          "proof_id": {
-            "$ref": "#/components/schemas/ProofID"
-          },
-          "profile_id": {
-            "$ref": "#/components/schemas/ProfileID"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ProofType"
-          },
-          "created_at": {
-            "$ref": "#/components/schemas/ProofCreatedAt"
-          },
-          "emission_date": {
-            "$ref": "#/components/schemas/ProofEmissionDate"
-          },
-          "expiration_date": {
-            "$ref": "#/components/schemas/ProofExpirationDate"
-          },
-          "status": {
-            "$ref": "#/components/schemas/ProofStatus"
-          },
-          "url": {
-            "$ref": "#/components/schemas/ProofURL"
-          },
-          "validator_id": {
-            "$ref": "#/components/schemas/ProofValidatorID"
-          }
-        }
-      },
-      "ProofID": {
-        "description": "Unique identifier of the Proof",
-        "type": "string",
-        "minLength": 1,
-        "example": "f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b"
-      },
-      "ProofType": {
-        "description": "The type of proof.",
-        "type": "string",
-        "minLength": 1,
-        "example": "PASSPORT",
-        "enum": [
-          "GOVERNMENT_ID",
-          "PASSPORT",
-          "ADDRESS_PROOF"
-        ]
-      },
-      "ProofCreatedAt": {
-        "description": "Proof creation date.",
-        "type": "string",
-        "format": "date",
-        "minLength": 1
-      },
-      "ProofEmissionDate": {
-        "description": "When the submitted proof was emitted by the authority.",
-        "type": "string",
-        "format": "date",
-        "minLength": 1
-      },
-      "ProofExpirationDate": {
-        "description": "When the submitted proof is going to expire.",
-        "type": "string",
-        "format": "date",
-        "minLength": 1
-      },
-      "ProofStatus": {
-        "description": "Status of the proof.",
-        "type": "string",
-        "minLength": 1,
-        "enum": [
-          "PENDING",
-          "APPROVED",
-          "REJECTED"
-        ]
-      },
-      "ProofURL": {
-        "description": "URL of where the submitted image of the proof is stored.",
-        "type": "string",
-        "minLength": 1,
-        "example": "www.cacaoid.com/bucket/321dufas89"
-      },
-      "ProofValidatorID": {
-        "description": "Unique identifier of the proof validator.",
-        "type": "string",
-        "minLength": 1,
-        "example": "b2aea9538714f00227c33f6a4c615aa708555dee88f5a59381745255d648c7cf"
-      },
-      "CreateProofRequest": {
-        "type": "object",
-        "properties": {
-          "profile_id": {
-            "$ref": "#/components/schemas/ProfileID"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ProofType"
-          },
-          "emission_date": {
-            "$ref": "#/components/schemas/ProofEmissionDate"
-          },
-          "expiration_date": {
-            "$ref": "#/components/schemas/ProofExpirationDate"
-          }
-        }
-      },
-      "ApproveProofRequest": {
-        "type": "object",
-        "properties": {
-          "proof_id": {
-            "$ref": "#/components/schemas/ProofID"
-          }
-        }
-      },
-      "RejectProofRequest": {
-        "type": "object",
-        "properties": {
-          "proof_id": {
-            "$ref": "#/components/schemas/ProofID"
+          "accountName": {
+            "$ref": "#/components/schemas/AccountName"
           }
         }
       },
       "Applications": {
         "type": "object",
         "properties": {
-          "owner_id": {
-            "$ref": "#/components/schemas/OwnerID"
+          "accountName": {
+            "$ref": "#/components/schemas/AccountNameEmergency"
           }
         }
       },
@@ -1915,42 +414,6 @@
           "type": "string"
         }
       },
-      "deviceID": {
-        "name": "device_id",
-        "in": "path",
-        "description": "The unique identifier of the device",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      },
-      "keyID": {
-        "name": "key_id",
-        "in": "path",
-        "description": "The unique identifier of the key",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      },
-      "proofID": {
-        "name": "proof_id",
-        "in": "path",
-        "description": "The unique identifier of the proof",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      },
-      "applicationID": {
-        "name": "application_id",
-        "in": "path",
-        "description": "The unique identifier of the application",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      },
       "id": {
         "name": "id",
         "in": "path",
@@ -2007,12 +470,11 @@
     },
     "securitySchemes": {
       "oAuth": {
-        "description": "CacaoID implements the OAuth protocol. A user can create and login to his CacaoID account by utilizing an official OAuth client. After the he can grant certain permissions utilizing scopes. Once he has logged in successfuly, the server will return a token that can be used for accessing the CacaoID API.",
+        "description": "Blah",
         "type": "oauth2",
         "flows": {
-          "authorizationCode": {
-            "tokenUrl": "http://testnet.cacaoid.com/oauth2/token",
-            "authorizationUrl": "http://testnet.cacaoid.com/oauth2/auth",
+          "implicit": {
+            "authorizationUrl": "http://example.com/api/oauth/dialog",
             "scopes": {
               "read:users": "read users info",
               "write:users": "modify or remove users"
@@ -2020,17 +482,10 @@
           }
         }
       },
-      "APIKey": {
-        "description": "The CacaoID API can be accessed utilizing API Keys which are based on the Ed25519 public-key system. An API Key can be created by making a request to the `create key` endpoint while utilizing a valid OAuth Token. The server will return a Key pair that contains both the Public Key which is the identifier of the API Key and a Private Key which is used to sign requests. When utilizing an API Key for Autorization, the API Key must be included in the headers. **Example** `Authorization:` `ApiKey-v1 etRWGzf+AY8m6DHalxO28aTDi0PXRi7w3L4F0XKSf/Y=`",
+      "SecretApiKey": {
         "type": "apiKey",
         "in": "header",
-        "name": "Authorization"
-      },
-      "Signature": {
-        "description": "When utilizing an API Key for Authorization, a valid signature must be provided in the headers alongside the API Key. Signatures can be generated utilizing the Private Key and one of our official libraries. **Example** `Signature:` `9a75ZaHd8ULqtZfgVounQItJ3eSqMd25IDe6tNizUJj52ZdlEBP4tjMtUhGi/q84WlrFxrbL3EuqqNitDX7KBQ==`",
-        "type": "apiKey",
-        "in": "header",
-        "name": "Signature"
+        "name": "api_key"
       }
     }
   }
