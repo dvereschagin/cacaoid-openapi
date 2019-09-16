@@ -1041,6 +1041,11 @@ components:
       type: string
       minLength: 1
       example: "keys devices profiles"
+    KeyPassword:
+      description: Hashed user master password
+      type: string
+      minLength: 1
+      example: "66B1DF91957F3A3B51D600FE5E914002A6E4683B34FF655BB1D20421CC075841"
     CreateKeyRequest:
       type: object
       properties:
@@ -1048,6 +1053,8 @@ components:
           $ref: "#/components/schemas/KeyName"
         scopes:
           $ref: "#/components/schemas/KeyScopes"
+        user_password:
+          $ref: "#/components/schemas/KeyPassword"
     Device:
       type: object
       properties:
@@ -1085,6 +1092,8 @@ components:
           $ref: "#/components/schemas/KeyScopes"
         notification_token:
           $ref: "#/components/schemas/DeviceNotificationToken"
+        user_password:
+          $ref: "#/components/schemas/KeyPassword"
     UpdateDeviceRequest:
       type: object
       properties:
