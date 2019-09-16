@@ -359,7 +359,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Device"
+                $ref: "#/components/schemas/CreateDeviceResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -683,7 +683,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Key"
+                $ref: "#/components/schemas/CreateKeyResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1055,6 +1055,30 @@ components:
           $ref: "#/components/schemas/KeyScopes"
         user_password:
           $ref: "#/components/schemas/KeyPassword"
+    CreateKeyResponse:
+      type: object
+      properties:
+        key:
+          $ref: "#/components/schemas/Key"
+        secrets:
+          $ref: "#/components/schemas/KeySecrets"
+    KeySecrets:
+      type: object
+      properties:
+        private_key:
+          $ref: "#/components/schemas/PrivateKey"
+        transaction_key:
+          $ref: "#/components/schemas/TransactionKey"
+    PrivateKey:
+      description: Ed25519 Private Key utilized to sign transactions
+      type: string
+      minLength: 1
+      example: "zVVlZ+eaaVHgzBXdsS9C1UwBTuJOyKMNKe5vHEL3Uw4ItepzfOB2SQyhB0wyN+ql+Wu0EnQksr07c68Y6zTaRw=="
+    TransactionKey:
+      description: Key utilized to authorize monetary transactions
+      type: string
+      minLength: 1
+      example: "AJ4538ynj2X0U9AVWt89HLWyHSdthGGClPnVQ0LFzs0="
     Device:
       type: object
       properties:
@@ -1094,6 +1118,15 @@ components:
           $ref: "#/components/schemas/DeviceNotificationToken"
         user_password:
           $ref: "#/components/schemas/KeyPassword"
+    CreateDeviceResponse:
+      type: object
+      properties:
+        device:
+          $ref: "#/components/schemas/Device"
+        key:
+          $ref: "#/components/schemas/Key"
+        secrets:
+          $ref: "#/components/schemas/KeySecrets"
     UpdateDeviceRequest:
       type: object
       properties:
