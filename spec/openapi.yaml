@@ -1081,6 +1081,8 @@ components:
       properties:
         device_name:
           $ref: "#/components/schemas/DeviceName"
+        scopes:
+          $ref: "#/components/schemas/KeyScopes"
         notification_token:
           $ref: "#/components/schemas/DeviceNotificationToken"
     UpdateDeviceRequest:
